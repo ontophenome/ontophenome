@@ -1,19 +1,19 @@
 %% output file
-output_filepath = './results/output_BiRW.mat';
+output_filepath = './results/output_LP.mat';
 
 %% ontology to train (HPO / GO)
-evaluation_ontology = OptionsEvaluationOnt.HPO;
+evaluation_ontology = 'HPO';
 
 %% model to train (tlDLP / DLP / OGL / BiRW / LP)
-model = OptionsModel.DLP;
+model = 'LP';
 
 %% PPI-Network (ML / BP)
-gene_ontology = OptionsGO.MF;
+gene_ontology = 'MF';
 
 %% train model with all data
 train_model = false;
 
-if model == OptionsModel.OGL || model == OptionsModel.DLP
+if strcmp(model, 'OGL') || strcmp(model, 'DLP')
     %% OGL/DLP hyperparams grid
     mv_betas = [1e-6, 1e-5, 1e-4, 1e-3, 1e-2, 1e-1, 1e0, 1e1, 1e2, 1e3, 1e4, 1e5, 1e6];
     mv_gammas = [1e-6, 1e-5, 1e-4, 1e-3, 1e-2, 1e-1, 1e0, 1e1, 1e2, 1e3, 1e4, 1e5, 1e6];
@@ -24,7 +24,7 @@ if model == OptionsModel.OGL || model == OptionsModel.DLP
     % beta
     mv_Vec = reshape(repmat(mv_betas, [prod(mv_Lengths(2)),1]), [prod(mv_Lengths(1:2)),1]);
     params(:,1) = mv_Vec;
-elseif model == OptionsModel.DLP
+elseif strcmp(model, 'DLP')
     %% tlDLP hyperparams grid
     mv_betas_X = 1e-4;
     mv_gammas_X = 1e-5;
@@ -47,10 +47,10 @@ elseif model == OptionsModel.DLP
     % beta X
     mv_Vec = reshape(repmat(mv_betas_X, [prod(mv_Lengths(1:1)),1]), [prod(mv_Lengths(1:2)),1]);
     params(:,1) = mv_Vec;
-elseif model == OptionsModel.LP
+elseif strcmp(model, 'LP')
     %% LP hyperparams grid
     params = 0.1:0.1:0.9;
-elseif model == OptionsModel.BiRW
+elseif strcmp(model, 'BiRW')
     %% BiRW hyperparams grid
     m_vParamVecAlphas = 0.1:0.1:0.9;
     m_vParamVecLR = 1:4;
