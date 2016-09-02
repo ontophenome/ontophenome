@@ -7,7 +7,9 @@ function m_cResult = DLP_CV(Y0_CV, mm_Params, phen_idxs, genes_idxs, n_genes, cv
     mvAllTotRanks = cell(size(mm_Params,1),1);
     L2 = eye(size(phen_groups,1),size(phen_groups,1)) - Normal_M_modified(phen_groups);
     
-    matlabpool
+    if ~isOctave()
+        matlabpool
+    end
     parfor mn_subiter = 1:size(mm_Params,1),
         
         %- regulization parameters
@@ -27,10 +29,14 @@ function m_cResult = DLP_CV(Y0_CV, mm_Params, phen_idxs, genes_idxs, n_genes, cv
         mvAllTotRanks{mn_subiter} = m_vTotRanks;
     end
     try
-        matlabpool close force local
+        if ~isOctave()
+            matlabpool close force local
+        end
     catch
         try
-            matlabpool close force local
+            if ~isOctave()
+                matlabpool close force local
+            end
         catch 
         end
     end

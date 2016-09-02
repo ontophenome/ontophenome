@@ -1,8 +1,8 @@
-function runModel2(optionsEvaluationOnt, optionsModel, ...
+function runModel(optionsEvaluationOnt, optionsModel, ...
     params, optionsGO, output_filepath, fold_start, fold_end, train_model, ...
     go_filepath, hpo_filepath, ppi_filepath, cv_index_filepath, tdlp_Y0_filepath)
 
-    if optionsGO == OptionsGO.MF
+    if strcmp(optionsGO, 'MF')
         mstr_dataset = 'molecular_function';
     else
         mstr_dataset = 'biological_process';
@@ -28,7 +28,7 @@ function runModel2(optionsEvaluationOnt, optionsModel, ...
     
     [m_cGeneList, m_vAidx_gf, ~] = ...
             intersect(upper(m_cgeneListG1), upper(m_cgeneListG2_sub)); %
-    if optionsGO == OptionsGO.MF
+    if strcmp(optionsGO, 'MF')
         Xtrue = tmp1.profiles(m_vAidx_gf,:)';
     end
 
@@ -106,7 +106,7 @@ function runModel2(optionsEvaluationOnt, optionsModel, ...
         end
         
         % Y0_CV
-        if optionsEvaluationOnt == OptionsEvaluationOnt.HPO
+        if strcmp(optionsEvaluationOnt, 'HPO')
             [m_vidxR, m_vIdxC, m_vValT] = find(Ytrue);
             
             m_vNewVals = m_vValT(mv_CVTrnIDX);
@@ -139,10 +139,10 @@ function runModel2(optionsEvaluationOnt, optionsModel, ...
         m_cResult{m_ntrial}.CVtstIDX = mv_CVTstIDX;
 
         % DLP 
-        if optionsModel == OptionsModel.DLP
+        if strcmp(optionsModel, 'DLP')
             %------------------------- DLP ---------------------------------%
 
-            if optionsEvaluationOnt == OptionsEvaluationOnt.HPO
+            if strcmp(optionsEvaluationOnt, 'HPO')
                 m_cResult_DLP = DLP_CV(Y0_CV, params, ...
                     m_vidxR, m_vIdxC, length(m_vGeneIDXE), ...
                     mv_CVTstIDX, G_ph, m_copt, L);
@@ -156,7 +156,7 @@ function runModel2(optionsEvaluationOnt, optionsModel, ...
             m_cResult{m_ntrial}.DLP_BParams = m_cResult_DLP.DLP_BParams;
             m_cResult{m_ntrial}.DLP_TotRanks = m_cResult_DLP.DLP_TotRanks;
 
-            if optionsEvaluationOnt == OptionsEvaluationOnt.HPO
+            if strcmp(optionsEvaluationOnt, 'HPO')
                 m_cResult_DLP = DLP(m_cResult_DLP.DLP_BParams, Y0_TST, ...
                     m_vidxR, m_vIdxC, ...
                     length(m_vGeneIDXE), mv_TstIDX, ...
@@ -182,10 +182,10 @@ function runModel2(optionsEvaluationOnt, optionsModel, ...
         end
         
         % OGL 
-        if optionsModel == OptionsModel.OGL
+        if strcmp(optionsModel, 'OGL')
             %------------------------- OGL ---------------------------------%
 
-            if optionsEvaluationOnt == OptionsEvaluationOnt.HPO
+            if strcmp(optionsEvaluationOnt, 'HPO')
                 m_cResult_OGL = OGL_CV(Y0_CV, params, ...
                     m_vidxR, m_vIdxC, length(m_vGeneIDXE), ...
                     mv_CVTstIDX, G_ph, r_ph, m_copt, L);
@@ -199,7 +199,7 @@ function runModel2(optionsEvaluationOnt, optionsModel, ...
             m_cResult{m_ntrial}.OGL_BParams = m_cResult_OGL.OGL_BParams;
             m_cResult{m_ntrial}.OGL_TotRanks = m_cResult_OGL.OGL_TotRanks;
 
-            if optionsEvaluationOnt == RunSimulationEvaluationType.RunSimulationEvaluationTypeHPO
+            if strcmp(optionsEvaluationOnt, 'HPO')
                 m_cResult_OGL = OGL(m_cResult_OGL.OGL_BParams, Y0_TST, ...
                     m_vidxR, m_vIdxC, ...
                     length(m_vGeneIDXE), mv_TstIDX, ...
@@ -225,9 +225,9 @@ function runModel2(optionsEvaluationOnt, optionsModel, ...
         end
 
         % tlDLP 
-        if optionsModel == OptionsModel.tlDLP
+        if strcmp(optionsModel, 'tlDLP')
             
-            if optionsEvaluationOnt == OptionsEvaluationOnt.HPO
+            if strcmp(optionsEvaluationOnt, 'HPO')
                 m_cResult_tlDLP = tlDLP_CV(X0, Y0_CV, params, m, S, m_copt, ...
                     L, m_nMaxturns, G_gf, G_ph, ...
                     m_vidxR, m_vIdxC, mv_CVTstIDX, m_vGeneIDXE, tdlp_Y0_filepath);
@@ -241,7 +241,7 @@ function runModel2(optionsEvaluationOnt, optionsModel, ...
             m_cResult{m_ntrial}.tlDLP_BParams = m_cResult_tlDLP.tlDLP_BParams;
             m_cResult{m_ntrial}.tlDLP_TotRanks = m_cResult_tlDLP.tlDLP_TotRanks;
 
-            if optionsEvaluationOnt == OptionsEvaluationOnt.HPO
+            if strcmp(optionsEvaluationOnt, 'HPO')
                 m_cResult_tlDLP = tlDLP(X0, m_cResult_tlDLP.tlDLP_BParams, m, S, ...
                     m_copt, L, m_nMaxturns, G_gf, G_ph, ...
                     m_vValT, m_vidxR, m_vIdxC, mv_TstIDX, ...
@@ -268,10 +268,10 @@ function runModel2(optionsEvaluationOnt, optionsModel, ...
         end
 
         % LP
-        if optionsModel == OptionsModel.LP
+        if strcmp(optionsModel, 'LP')
             %------------------- Base line method ---------------------%
             %------------------- Label propagation --------------------%
-            if optionsEvaluationOnt == OptionsEvaluationOnt.HPO
+            if strcmp(optionsEvaluationOnt, 'HPO')
                 m_cResult_LP = LP(params, Y0_CV, Y0_TST, ...
                     m_vidxR, m_vIdxC, length(m_vGeneIDXE), mv_CVTstIDX, mv_TstIDX, ...
                     m, S);
@@ -297,10 +297,10 @@ function runModel2(optionsEvaluationOnt, optionsModel, ...
         end
 
         % BiRW
-        if optionsModel == OptionsModel.BiRW
+        if strcmp(optionsModel, 'BiRW')
             %------------------- Base line method ---------------------%
             %------------------- BiRW -------------------------------%
-            if optionsEvaluationOnt == OptionsEvaluationOnt.HPO
+            if strcmp(optionsEvaluationOnt, 'HPO')
                 m_cResult_BiRW = BiRW(params, Y0_CV, Y0_TST, ...
                 Normal_M_modified(G_ph), m_vidxR, m_vIdxC, ...
                 length(m_vGeneIDXE), mv_TstIDX, S);
