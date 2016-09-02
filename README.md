@@ -1,12 +1,17 @@
 # Transfer Learning across Ontologies for Phenome-Genome Association Prediction
 
+## Requirements
+
+* Operating System - Linux 3.13.0
+* MATLAB 8.1.0.604 (R2013a) or 
+
 ## How to run the project
 You can run the project using the *script_main.m* file. This file will call the *runModel* function, which will perform cross-validation for parameter selection, followed by model evaluation by training with the best hyper-parameter obtained, and testing with test set. The options to be configurated are the following:
 
 * **output_filepath**: path to the file which will contain the output;
-* **evaluation_ontology**: ontology to be used in the evaluation step. Must be one of the following options: *OptionsEvaluationOnt.HPO* or *OptionsEvaluationOnt.GO*;
-* **model**: the model to be run. Must be one of the following options: *OptionsModel.tlDLP* (Transfer learning dual label propagation), *OptionsModel.DLP* (dual label propagation), *OptionsModel.OGL* (ontology-guided group Lasso), *OptionsModel.BiRW* (Bi-Random Walk) or *OptionsModel.LP* (label propagation);
-* **gene_ontology**: the gene ontology to be used. Must be one of the following options: *OptionsGO.MF* (molecular functions) or *OptionsGO.BP* (biological processes);
+* **evaluation_ontology**: ontology to be used in the evaluation step. Must be one of the following options: *"HPO"* or *"GO"*;
+* **model**: the model to be run. Must be one of the following options: *"tlDLP"* (Transfer learning dual label propagation), *"DLP"* (dual label propagation), *"OGL"* (ontology-guided group Lasso), *"BiRW"* (Bi-Random Walk) or *"LP"* (label propagation);
+* **gene_ontology**: the gene ontology to be used. Must be one of the following options: *"MF"* (molecular functions) or *"BP"* (biological processes);
 * **train_model**: when *true*, the model will be trained with all the data, instead of performing cross-validation. Usually when this option is set, only one hyper-parameter option is set;
 * **go_filepath**: path to the gene ontology file;
 * **hpo_filepath**: path to the phenotype ontology file;
