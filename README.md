@@ -1,6 +1,6 @@
 # Transfer Learning across Ontologies for Phenome-Genome Association Prediction
 
-## Requirements
+## Software Requirements
 
 * Operating System - Linux 3.13.0
 * MATLAB 8.1.0.604 (R2013a) or Octave 3.8.1
@@ -21,6 +21,19 @@ You can run the project using the *script_main.m* file. This file will call the 
 * **fold_start** and **fold_end**: range of folds to use in the cross-validation. E.g.: If you want to perform 10-fold CV, *fold_start* must be set to 1, and *fold_end* to 10.
 
 **Note:** Each model has a different number of hyper-parameters, also to be defined in this file;
+
+After changing the option, you can run the software with the following command:
+
+To run in matlab:
+
+```
+matlab script_main.m
+```
+To run in Octave:
+
+```
+octave script_main.m
+```
 
 ## Phenotype ontology data
 
