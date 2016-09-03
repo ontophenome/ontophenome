@@ -24,7 +24,7 @@ if strcmp(model, 'OGL') || strcmp(model, 'DLP')
     % beta
     mv_Vec = reshape(repmat(mv_betas, [prod(mv_Lengths(2)),1]), [prod(mv_Lengths(1:2)),1]);
     params(:,1) = mv_Vec;
-elseif strcmp(model, 'DLP')
+elseif strcmp(model, 'tlDLP')
     %% tlDLP hyperparams grid
     mv_betas_X = 1e-4;
     mv_gammas_X = 1e-5;
@@ -71,7 +71,8 @@ cv_index_filepath = './data/CVindex/elementwise/HPO_CVset_all_5foldCV.mat';
 
 % tlDLP initialization file
 % if running tlDLP, need to provide Y0, usually output from DLP or OGL
-tdlp_Y0_filepath = './data/DLP_Y_hat.mat';
+tdlp_Y0 = load('./data/DLP_Y_hat.mat');
+tdlp_Y0 = tdlp_Y0.Yhat;
 
 %% CV folds
 fold_start = 1;
@@ -90,4 +91,4 @@ runModel(evaluation_ontology, ...
             po_filepath, ...
             ppi_filepath, ...
             cv_index_filepath, ...
-            tdlp_Y0_filepath);
+            tdlp_Y0);
