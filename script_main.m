@@ -71,8 +71,7 @@ cv_index_filepath = './data/CVindex/elementwise/HPO_CVset_all_5foldCV.mat';
 
 % tlDLP initialization file
 % if running tlDLP, need to provide Y0, usually output from DLP or OGL
-tdlp_Y0 = load('./data/DLP_Y_hat.mat');
-tdlp_Y0 = tdlp_Y0.Yhat;
+tdlp_Y0 = rand(6253, 2302); % <---- REPLACE USING YOUR MATRIX
 
 %% CV folds
 fold_start = 1;
