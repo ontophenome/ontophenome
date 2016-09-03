@@ -17,17 +17,17 @@ You can run the project using the *script_main.m* file. This file will call the 
 * **hpo_filepath**: path to the phenotype ontology file;
 * **ppi_filepath**: path to the ppi-network file;
 * **cv\_index_filepath**: path to the file containing the indices of cross-validation data (more information about CV data below);
-* **tdlp\_Y0_filepath**: path to the initialization of tlDLP, usually the result from DLP or OGL (more information about tlDLP initiaization below);
+* **tdlp\_Y0**: initialization of tlDLP, usually the result from DLP or OGL (more information about tlDLP initiaization below);
 * **fold_start** and **fold_end**: range of folds to use in the cross-validation. E.g.: If you want to perform 10-fold CV, *fold_start* must be set to 1, and *fold_end* to 10.
 
 **Note:** Each model has a different number of hyper-parameters, also to be defined in this file;
 
 After changing the option, you can run the software with the following command:
 
-To run in matlab:
+To run in Matlab, start it using the **matlab** command and execute:
 
 ```
-matlab script_main.m
+script_main
 ```
 To run in Octave:
 
@@ -72,7 +72,7 @@ The indices in the file represent the indices of the associations between genes 
 
 ## tlDLP initialization
 
-In our tlDLP implementation the algorithm is initialized with the result of DLP (or OGL). Our analysis have shown better performance, comparing to initializing it with the training set. For this reason, the configuration of the *tdlp\_Y0_filepath* is required. This file should contain the Y matrix resulting from one of the other methods.
+In our tlDLP implementation the algorithm is initialized with the result of DLP (or OGL). Our analysis have shown better performance, comparing to initializing it with the training set. For this reason, the configuration of the *tdlp\_Y0* is required. This file should contain the Y matrix resulting from one of the other methods.
 
 ## Results
 
