@@ -69,15 +69,15 @@ function [W, m_vobjs] = myfunc_lbfgsb_OGL(W, W0, L, G, r, m_copt)
         %   it means it is requesting you to compute the function and gradient,
         %   and then call the function again.
         % If it is 'NEW_X', it means it has completed one full iteration.
-%         [f, task, csave, lsave, isave, dsave] = ...
-%             lbfgsb_wrapper(m, x, l, u, nbd, f, g, factr, pgtol, wa, iwa, task, ...
-%                            iprint, csave, lsave, isave, dsave );
+        [f, task, csave, lsave, isave, dsave] = ...
+            lbfgsb_wrapper(m, x, l, u, nbd, f, g, factr, pgtol, wa, iwa, task, ...
+                           iprint, csave, lsave, isave, dsave );
 
         W = reshape(x, [mn_J, mn_K]);
         task = deblank(task(1:60)); % this is critical!
         %otherwise, fortran interprets the string incorrectly
 
-        if 1 == 1 %strfind( task, 'FG' )
+        if 1 == strfind( task, 'FG' )
             % L-BFGS-B requests that we compute the gradient and function value
             % [f, g]
             Wds(:,:) = W.^2;
