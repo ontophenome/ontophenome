@@ -29,7 +29,7 @@ elseif strcmp(model, 'tlDLP')
     mv_betas_X = 1e-4;
     mv_gammas_X = 1e-5;
     mv_betas_Y = 1e-4;
-    mv_gammas_Y = 1e6;
+    mv_gammas_Y = 1e-5;
     mv_zeta = [0, 1e-7, 1e-6, 1e-5, 1e-4, 1e-3, 1e-2, 1e-1, 1e0, 1e1, 1e2, 1e3];
     mv_Lengths = [length(mv_betas_X), length(mv_gammas_X), length(mv_betas_Y), length(mv_gammas_Y), length(mv_zeta)];
     params = zeros(prod(mv_Lengths), 5);
@@ -77,6 +77,12 @@ tdlp_Y0 = rand(6253, 2302); % <---- REPLACE USING YOUR MATRIX
 fold_start = 1;
 fold_end = 5;
 
+%% Maximum depth to remove children
+% remove children nodes in test set, to keep consistency
+% if your test set is already consistent, just set this 
+% parameter to infinity
+max_depth_children = 6;
+
 %% call model
 runModel(evaluation_ontology, ...
             model, ...
@@ -90,4 +96,5 @@ runModel(evaluation_ontology, ...
             po_filepath, ...
             ppi_filepath, ...
             cv_index_filepath, ...
-            tdlp_Y0);
+            tdlp_Y0, ...
+            max_depth_children);

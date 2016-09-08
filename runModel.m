@@ -1,6 +1,6 @@
 function runModel(optionsEvaluationOnt, optionsModel, ...
     params, optionsGO, output_filepath, fold_start, fold_end, train_model, ...
-    go_filepath, hpo_filepath, ppi_filepath, cv_index_filepath, tdlp_Y0)
+    go_filepath, hpo_filepath, ppi_filepath, cv_index_filepath, tdlp_Y0, max_depth_children)
 
     if strcmp(optionsGO, 'MF')
         mstr_dataset = 'molecular_function';
@@ -113,11 +113,13 @@ function runModel(optionsEvaluationOnt, optionsModel, ...
             m_vNewIDXR = m_vidxR(mv_CVTrnIDX);
             m_vNewIDXC = m_vIdxC(mv_CVTrnIDX);
             Y0_CV = sparse(m_vNewIDXR,m_vNewIDXC,m_vNewVals,size(G_ph,1),m);
+            Y0_CV = removeChildrenAssoc(G_ph, Y0_CV, d_ph, max_depth_children);
 
             m_vNewVals = m_vValT(mv_TrnIDX);
             m_vNewIDXR = m_vidxR(mv_TrnIDX);
             m_vNewIDXC = m_vIdxC(mv_TrnIDX);
             Y0_TST = sparse(m_vNewIDXR,m_vNewIDXC,m_vNewVals,size(G_ph,1),m);
+            Y0_TST = removeChildrenAssoc(G_ph, Y0_TST, d_ph, max_depth_children);
         else
             [m_vidxR, m_vIdxC, m_vValT] = find(Xtrue);
             
@@ -125,11 +127,13 @@ function runModel(optionsEvaluationOnt, optionsModel, ...
             m_vNewIDXR = m_vidxR(mv_CVTrnIDX);
             m_vNewIDXC = m_vIdxC(mv_CVTrnIDX);
             X0_CV = sparse(m_vNewIDXR,m_vNewIDXC,m_vNewVals,size(G_gf,1),m);
+            X0_CV = removeChildrenAssoc(G_gf, X0_CV, d_gf, max_depth_children);
 
             m_vNewVals = m_vValT(mv_TrnIDX);
             m_vNewIDXR = m_vidxR(mv_TrnIDX);
             m_vNewIDXC = m_vIdxC(mv_TrnIDX);
             X0_TST = sparse(m_vNewIDXR,m_vNewIDXC,m_vNewVals,size(G_gf,1),m);
+            X0_TST = removeChildrenAssoc(G_gf, X0_TST, d_gf, max_depth_children);
         end
 
         m_cResult{m_ntrial}.datastr = mstr_dataset;
