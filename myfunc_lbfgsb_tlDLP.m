@@ -14,8 +14,6 @@ function [W, m_vobjs] = myfunc_lbfgsb_tlDLP(W, W0, Z0, Btr, L, G2, m_copt)
     WsubMat = zeros(sum(sum(m_mWNzIDX)), 1);
     
     WB = zeros(size(Z0));
-    
-    VERBOSE = m_copt.verbose;
     %--- end of Proc()
 
 
@@ -36,81 +34,87 @@ function [W, m_vobjs] = myfunc_lbfgsb_tlDLP(W, W0, Z0, Btr, L, G2, m_copt)
     printEvery = 1;
 
     % Make the work arrays
-    wa      = ones(2*m*n + 5*n + 11*m*m + 8*m,1);
-    iwa     = ones(3*n,1,'int32');
-    task    = 'START';
     iprint  = 0;
-    csave   = '';
-    lsave   = zeros(4,1);
-    isave   = zeros(44,1, 'int32');
-    dsave   = zeros(29,1);
-    f       = 0;
-    g       = zeros(n,1);
-
-    m_vobjs = zeros(maxIts, 1);
     %--- end of Proc()
 
     x   = reshape(W, [n, 1]) + 0; % important: we want Matlab to make a copy of this.
     %  'x' will be modified in-place
 
-    outer_count     = 0;
-    for k = 1:maxTotalIts
-        % Call the mex file. The way it works is that you call it,
-        %   then it returns a "task". If that task starts with 'FG',
-        %   it means it is requesting you to compute the function and gradient,
-        %   and then call the function again.
-        % If it is 'NEW_X', it means it has completed one full iteration.
-        [f, task, csave, lsave, isave, dsave] = ...
-            lbfgsb_wrapper(m, x, l, u, nbd, f, g, factr, pgtol, wa, iwa, task, ...
-                           iprint, csave, lsave, isave, dsave );
+    callF = @(x) tlDLP_obj(x);
+    fcn_wrapper(callF, printEvery, x);
+    callF_wrapped = @(x,varargin) fcn_wrapper(callF, printEvery, x, varargin{:});
+    
+    [~,x,~,~, ~] = lbfgsb_wrapper( m, x, l, u, nbd, callF_wrapped, factr, pgtol, iprint, maxIts, maxTotalIts);
+    m_vobjs = fcn_wrapper();
+    W = reshape(x, [mn_J, mn_K]);
+    
+    function [f,g] = fcn_wrapper(callF, printEvery, x, varargin)
+        persistent k history
+        if isempty(k), k = 1; end
+        if nargin==0
+            % reset persistent variables and return information
+            if ~isempty(history) && ~isempty(k) 
+                printFcn(k,history);
+                f = history(1:k,1);
+            end
+            history = [];
+            k = [];
+            return;
+        end
+        
+        [f,g] = callF(x);
+        
+        if nargin > 3
+            outerIter = varargin{1}+1;
+            
+            history(outerIter,1)    = f;
+            history(outerIter,2)    = norm(g,Inf); % g is not projected
+            
+            if outerIter > k
+                % Display info from *previous* input
+                % Since this may be called several times before outerIter
+                % is actually updated
+                if ~isinf(printEvery) && ~mod(k,printEvery)
+                    printFcn(k,history);
+                end
+                k = outerIter;
+            end
+            
+        end
 
+    end
+    
+    function [f,g] = tlDLP_obj(x) 
         W_full = reshape(x, [mn_J, mn_K]);
         W = sparse(W_full);
-        
-        task = deblank(task(1:60)); % this is critical!
-        %otherwise, fortran interprets the string incorrectly
 
-        if 1 == strfind( task, 'FG' )
-            % L-BFGS-B requests that we compute the gradient and function value
-            % [f, g]
-                        
-            % Delta = m_mMat01V + d{ 0.5*||W-W0||_W^2 + 0.5*gamma*||Z - W'SB'||_F^2 + 0.5*alpha*tr(W'LW) }/dW            
-            WsubMat(:) = W_full(m_mWNzIDX) - W0(m_mWNzIDX);
-            LW = sparse(L*W);
-            GW = sparse(G2*W');
-            WB(:,:) = W'*Btr;
-            
-            %- old: Delta(:,:) = gBtr*WB' - BZ + LW  + (W_full.*(m_mMat02V*G(m_vinnerN,:)));
-            %- note: m_mMat02V*G(m_vinnerN,:) and m_mMat02V*sparse(G(m_vinnerN,:))
-            %        do not yield the exactly same result. However, the
-            %        differece would be negligible.
-            Delta(:,:) = gBtr*WB' - BZ + LW + GW';
-            Delta(m_mWNzIDX)  = Delta(m_mWNzIDX) + WsubMat;
-            
-            f = 0.5*sum(sum(W.*LW)) + 0.5*sum(sum(W'.*GW)) ...
-                + 0.5*sum( WsubMat.^2 ) ...
-                + 0.5*gamma*sum((Z0(:)-WB(:)).^2 );
-            g(:) = reshape(Delta,[n, 1]);
+        % L-BFGS-B requests that we compute the gradient and function value
+        % [f, g]
 
-        elseif 1 == strfind( task, 'NEW_X' )
-            outer_count = outer_count + 1;
+        % Delta = m_mMat01V + d{ 0.5*||W-W0||_W^2 + 0.5*gamma*||Z - W'SB'||_F^2 + 0.5*alpha*tr(W'LW) }/dW            
+        WsubMat(:) = W_full(m_mWNzIDX) - W0(m_mWNzIDX);
+        LW = sparse(L*W);
+        GW = sparse(G2*W');
+        WB(:,:) = W'*Btr;
 
-            % Display information if requested
-            if ~mod( outer_count, printEvery ) && (VERBOSE > 0),
-                m_vobjs(outer_count) = f;
-                fprintf('Iteration %4d, f = %5.5e, ||g||_inf = %5.2e \n', ...
-                    outer_count, f, norm(g,Inf) );
-            end
+        %- old: Delta(:,:) = gBtr*WB' - BZ + LW  + (W_full.*(m_mMat02V*G(m_vinnerN,:)));
+        %- note: m_mMat02V*G(m_vinnerN,:) and m_mMat02V*sparse(G(m_vinnerN,:))
+        %        do not yield the exactly same result. However, the
+        %        differece would be negligible.
+        Delta(:,:) = gBtr*WB' - BZ + LW + GW';
+        Delta(m_mWNzIDX)  = Delta(m_mWNzIDX) + WsubMat;
 
-            if outer_count >= maxIts
-                disp('Maxed-out iteration counter, exiting...');
-                break;
-            end
-
-        else
-            break;
-        end
+        f = 0.5*sum(sum(W.*LW)) + 0.5*sum(sum(W'.*GW)) ...
+            + 0.5*sum( WsubMat.^2 ) ...
+            + 0.5*gamma*sum((Z0(:)-WB(:)).^2 );
+        g = zeros(n,1);
+        g(:) = reshape(Delta,[n, 1]);
+    end
+    
+    function printFcn(k,history)
+        fprintf('Iter %5d, f(x) = %2e, ||grad||_infty = %.2e', ...
+            k, history(k,1), history(k,2) );
+        fprintf('\n');
     end
 
-    m_vobjs = m_vobjs(1:outer_count);
 end % end of main function

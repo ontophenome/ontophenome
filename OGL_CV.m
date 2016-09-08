@@ -6,9 +6,7 @@ function m_cResult = OGL_CV(Y0_CV, mm_Params, phen_idxs, genes_idxs, n_genes, cv
     m_vEvalRank = zeros(size(mm_Params,1),1);
     mvAllTotRanks = cell(size(mm_Params,1),1);
     
-    if ~isOctave()
-        matlabpool
-    end
+    parallelPoolStart();
     parfor mn_subiter = 1:size(mm_Params,1),
         %- regulization parameters
         beta = mm_Params(mn_subiter,1);  
@@ -28,14 +26,10 @@ function m_cResult = OGL_CV(Y0_CV, mm_Params, phen_idxs, genes_idxs, n_genes, cv
         mvAllTotRanks{mn_subiter} = m_vTotRanks;
     end
     try
-        if ~isOctave()
-            matlabpool close force local
-        end
+        parallelPoolClose();
     catch
         try
-            if ~isOctave()
-                matlabpool close force local
-            end
+            parallelPoolClose();
         catch 
         end
     end
