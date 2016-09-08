@@ -326,7 +326,8 @@ function runModel(optionsEvaluationOnt, optionsModel, ...
         end
 
         %--- save results
-        save(output_filepath, 'm_cResult');
+        [pathstr,name,ext] = fileparts(output_filepath);
+        save(strcat(pathstr, '/', name, '_fold', num2str(m_ntrial), ext), 'm_cResult');
     end
 end
 
