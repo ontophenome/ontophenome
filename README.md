@@ -2,7 +2,6 @@
 
 ## Software Requirements
 
-* Operating System - Linux 3.13.0
 * MATLAB 8.1.0.604 (R2013a) or Octave 3.8.1
 
 ## How to run the project

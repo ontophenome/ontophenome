@@ -1,4 +1,4 @@
-function m_vTotRanks = LP_Eval(Y0, Y, phen_idxs, genes_idxs, n_genes, tst_idx)
+function m_vTotRanks = LP_Eval(Y0, Y, phen_idxs, genes_idxs, n_genes, tst_idx, G_ph)
 
     m_vNewIDXR = phen_idxs(tst_idx);
     m_vNewIDXC = genes_idxs(tst_idx);
@@ -9,6 +9,10 @@ function m_vTotRanks = LP_Eval(Y0, Y, phen_idxs, genes_idxs, n_genes, tst_idx)
     for mn_i = 1:length(mv_uniqIRs),
         mn_pos = mv_uniqIRs(mn_i);
 
+        if sum(G_ph(:,mn_pos)) ~= 1 % only leaf
+            continue;
+        end
+        
         m_vTrueIDX = find(Y0(mn_pos,:));
         m_vCandIDX = m_vNewIDXC(m_vNewIDXR==mn_pos);  
 

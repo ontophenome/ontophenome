@@ -1,4 +1,4 @@
-function m_cResult = LP(etas, Y0_CV, Y0_TST, phen_idxs, genes_idxs, n_genes, cvtst_idx, tst_idx, m, S)
+function m_cResult = LP(etas, Y0_CV, Y0_TST, phen_idxs, genes_idxs, n_genes, cvtst_idx, tst_idx, m, S, G_ph)
     
     m_vEvalRank = zeros(length(etas),1);
 
@@ -13,7 +13,7 @@ function m_cResult = LP(etas, Y0_CV, Y0_TST, phen_idxs, genes_idxs, n_genes, cvt
         Y = (mm_invL*Normal_M_modified(Y0_CV)')';
                 
         %- CV evaluation for Single-Task with Lasso
-        m_vTotRanks = LP_Eval(Y0_CV, Y, phen_idxs, genes_idxs, n_genes, cvtst_idx);
+        m_vTotRanks = LP_Eval(Y0_CV, Y, phen_idxs, genes_idxs, n_genes, cvtst_idx, G_ph);
         m_vEvalRank(mn_subiter) = sum(m_vTotRanks<100);
     end
     m_cResult.LP_CVresult = m_vEvalRank;
@@ -34,7 +34,7 @@ function m_cResult = LP(etas, Y0_CV, Y0_TST, phen_idxs, genes_idxs, n_genes, cvt
     m_cResult.LP_Yhat =  Y;
     
     % Evaluation 
-    m_vTotRanks = LP_Eval(Y0_TST, Y, phen_idxs, genes_idxs, n_genes, tst_idx);
+    m_vTotRanks = LP_Eval(Y0_TST, Y, phen_idxs, genes_idxs, n_genes, tst_idx, G_ph);
     
     m_cResult.LP_RankAvg = mean(m_vTotRanks);
     m_cResult.LP_Eval = m_vTotRanks;

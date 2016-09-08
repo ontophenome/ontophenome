@@ -21,7 +21,7 @@ function m_cResult = DLP(best_Params, Y0_TST, phen_idxs, genes_idxs, n_genes, ts
     m_cResult.DLP_Yhat =  Y;
     
     %- Evaluation for Single-Task GL 
-    m_vTotRanks = DLP_Eval(Y0_TST, Y, phen_idxs, genes_idxs, n_genes, tst_idx);
+    m_vTotRanks = DLP_Eval(Y0_TST, Y, phen_idxs, genes_idxs, n_genes, tst_idx, phen_groups);
     m_cResult.DLP_RankAvg = mean(m_vTotRanks);
     m_cResult.DLP_Eval = m_vTotRanks;
 

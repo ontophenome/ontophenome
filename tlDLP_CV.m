@@ -120,6 +120,10 @@ function m_cResult = tlDLP_CV(X0, Y0_CV, mm_Params, m, S, m_copt, L, m_nMaxturns
         for mn_i = 1:length(mv_uniqIRs),
             mn_pos = mv_uniqIRs(mn_i);
             
+            if sum(G_ph(:,mn_pos)) ~= 1 % only leaf
+                continue;
+            end
+            
             m_vTrueIDX = find(Y0_CV(mn_pos,:));
             m_vCandIDX = m_vNewIDXC(m_vNewIDXR==mn_pos);  
 

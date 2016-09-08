@@ -21,7 +21,7 @@ function m_cResult = OGL_CV(Y0_CV, mm_Params, phen_idxs, genes_idxs, n_genes, cv
         Y = W_sol';
         
         %- CV Evaluation for Single-Task GL
-        m_vTotRanks = OGL_Eval(Y0_CV, Y, phen_idxs, genes_idxs, n_genes, cvtst_idx);
+        m_vTotRanks = OGL_Eval(Y0_CV, Y, phen_idxs, genes_idxs, n_genes, cvtst_idx, phen_groups);
         m_vEvalRank(mn_subiter) = sum(m_vTotRanks<100);
         mvAllTotRanks{mn_subiter} = m_vTotRanks;
     end

@@ -19,7 +19,7 @@ function m_cResult = OGL(best_Params, Y0_TST, phen_idxs, genes_idxs, n_genes, ts
     m_cResult.OGL_Yhat =  Y;
     
     %- Evaluation for Single-Task GL 
-    m_vTotRanks = OGL_Eval(Y0_TST, Y, phen_idxs, genes_idxs, n_genes, tst_idx);
+    m_vTotRanks = OGL_Eval(Y0_TST, Y, phen_idxs, genes_idxs, n_genes, tst_idx, phen_groups);
     m_cResult.OGL_RankAvg = mean(m_vTotRanks);
     m_cResult.OGL_Eval = m_vTotRanks;
 

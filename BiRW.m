@@ -1,4 +1,4 @@
-function m_cResult = BiRW(mm_Params, Y0_CV, Y0_TST, P, phen_idxs, genes_idxs, n_genes, tst_idx, S)
+function m_cResult = BiRW(mm_Params, Y0_CV, Y0_TST, P, phen_idxs, genes_idxs, n_genes, tst_idx, S, G_ph)
     
     norm_Y0_CV = Normal_M_modified(Y0_CV);
     norm_Y0_TST = Normal_M_modified(Y0_TST);
@@ -39,7 +39,7 @@ function m_cResult = BiRW(mm_Params, Y0_CV, Y0_TST, P, phen_idxs, genes_idxs, n_
         Y = R;
                 
         %- CV evaluation for BiRW
-        m_vTotRanks = BiRW_Eval(Y0_CV, Y, phen_idxs, genes_idxs, n_genes, tst_idx);     
+        m_vTotRanks = BiRW_Eval(Y0_CV, Y, phen_idxs, genes_idxs, n_genes, tst_idx, G_ph);     
         m_vEvalRank(mn_subiter) = sum(m_vTotRanks<100);
     end
     m_cResult.BiRW_CVresult = m_vEvalRank;
@@ -84,7 +84,7 @@ function m_cResult = BiRW(mm_Params, Y0_CV, Y0_TST, P, phen_idxs, genes_idxs, n_
     m_cResult.BiRW_Yhat =  Y;
     
     % Evaluation 
-    m_vTotRanks = BiRW_Eval(Y0_TST, Y, phen_idxs, genes_idxs, n_genes, tst_idx);
+    m_vTotRanks = BiRW_Eval(Y0_TST, Y, phen_idxs, genes_idxs, n_genes, tst_idx, G_ph);
     
     m_cResult.BiRW_RankAvg = mean(m_vTotRanks);
     m_cResult.BiRW_Eval = m_vTotRanks;
