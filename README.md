@@ -18,13 +18,14 @@ You can run the project using the *script_main.m* file. This file will call the 
 * **ppi_filepath**: path to the ppi-network file;
 * **cv\_index_filepath**: path to the file containing the indices of cross-validation data (more information about CV data below);
 * **tdlp\_Y0**: initialization of tlDLP, usually the result from DLP or OGL (more information about tlDLP initiaization below);
+* **max\_depth\_children**: set the depth from which children associations of associations in the test set are removed to maintain consistency. In case your test set is already consistent, set this parameter to infinity.
 * **fold_start** and **fold_end**: range of folds to use in the cross-validation. E.g.: If you want to perform 10-fold CV, *fold_start* must be set to 1, and *fold_end* to 10.
 
 **Note:** Each model has a different number of hyper-parameters, also to be defined in this file;
 
 After changing the option, you can run the software with the following command:
 
-To run in Matlab, start it using the **matlab** command and execute:
+To run in Matlab, start it using the ```matlab``` command and execute:
 
 ```
 script_main
