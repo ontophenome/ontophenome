@@ -3,6 +3,7 @@
 ## Software Requirements
 
 * MATLAB 8.1.0.604 (R2013a) or Octave 3.8.1
+* 16 GB RAM
 
 ## How to run the project
 You can run the project using the *script_main.m* file. This file will call the *runModel* function, which will perform cross-validation for parameter selection, followed by model evaluation by training with the best hyper-parameter obtained, and testing with test set. The options to be configurated are the following:
